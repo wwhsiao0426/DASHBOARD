@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F5F4F0;
+    --surface: #FFFFFF;
+    --border: #E4E2DB;
+    --border-strong: #C8C5BC;
+    --text-primary: #1A1916;
+    --text-secondary: #6B6860;
+    --text-muted: #9E9B93;
+    --accent-cf: #1B4FBB;
+    --accent-cf-light: #EBF0FB;
+    --accent-sp: #107C41;
+    --accent-sp-light: #E8F5EE;
+    --accent-ul: #C2410C;
+    --accent-ul-light: #FFF7ED;
+    --accent-hw: #7C3AED;
+    --accent-hw-light: #EDE9FE;
+    --accent-iso: #0E7490;
+    --accent-iso-light: #CFFAFE;
+    --accent-jira: #B45309;
+    --accent-jira-light: #FEF3C7;
+    --tag-bg: #EEECEA;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 40px;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    width: fit-content;
+  }
+  .tab {
+    display: flex; align-items: center; gap: 7px;
+    padding: 7px 16px;
+    border-radius: 5px;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer;
+    border: none; background: none;
+    color: var(--text-muted);
+    transition: all 0.15s;
+  }
+  .tab svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .tab:hover { color: var(--text-primary); background: var(--bg); }
+  .tab.active-cf { background: var(--accent-cf-light); color: var(--accent-cf); }
+  .tab.active-sp { background: var(--accent-sp-light); color: var(--accent-sp); }
+  .tab-count {
+    font-size: 11px; font-family: 'DM Mono', monospace;
+    background: var(--tag-bg); color: var(--text-muted);
+    padding: 1px 6px; border-radius: 10px;
+  }
+  .tab.active-cf .tab-count { background: #d3e0f8; color: var(--accent-cf); }
+  .tab.active-sp .tab-count { background: #c6e8d4; color: var(--accent-sp); }
+  .tab.active-ul { background: var(--accent-ul-light); color: var(--accent-ul); }
+  .tab.active-ul .tab-count { background: #fde8d8; color: var(--accent-ul); }
+  .tab.active-hw { background: var(--accent-hw-light); color: var(--accent-hw); }
+  .tab.active-hw .tab-count { background: #ddd6fe; color: var(--accent-hw); }
+  .tab.active-iso { background: var(--accent-iso-light); color: var(--accent-iso); }
+  .tab.active-iso .tab-count { background: #a5f3fc; color: var(--accent-iso); }
+  .tab.active-jira { background: var(--accent-jira-light); color: var(--accent-jira); }
+  .tab.active-jira .tab-count { background: #fde68a; color: var(--accent-jira); }
+  .tab.dragging-tab { opacity: 0.4; }
+  .tab.drag-over-tab { outline: 2px dashed var(--border-strong); outline-offset: -2px; }
+
+  /* Search */
+  .search-wrap {
+    position: relative;
+    max-width: 480px;
+    margin: 0 0 20px;
+  }
+  .search-wrap svg {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    width: 15px; height: 15px; stroke: var(--text-muted); fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    pointer-events: none;
+  }
+  .search-wrap input {
+    width: 100%;
+    padding: 10px 14px 10px 38px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    background: var(--surface);
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .search-wrap input:focus { border-color: var(--accent-cf); box-shadow: 0 0 0 3px var(--accent-cf-light); }
+  .search-wrap input.sp-focus:focus { border-color: var(--accent-sp); box-shadow: 0 0 0 3px var(--accent-sp-light); }
+  .search-wrap input.ul-focus:focus { border-color: var(--accent-ul); box-shadow: 0 0 0 3px var(--accent-ul-light); }
+  .search-wrap input.hw-focus:focus { border-color: var(--accent-hw); box-shadow: 0 0 0 3px var(--accent-hw-light); }
+  .search-wrap input.iso-focus:focus { border-color: var(--accent-iso); box-shadow: 0 0 0 3px var(--accent-iso-light); }
+  .search-wrap input.jira-focus:focus { border-color: var(--accent-jira); box-shadow: 0 0 0 3px var(--accent-jira-light); }
+  .search-wrap input::placeholder { color: var(--text-muted); }
+
+  .result-count { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; min-height: 18px; }
+
+  /* Cards */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    text-decoration: none;
+    display: flex; flex-direction: column;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+    position: relative; overflow: hidden;
+  }
+  .card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    opacity: 0; transition: opacity 0.15s;
+  }
+  .card[data-type="confluence"]::before { background: var(--accent-cf); }
+  .card[data-type="sharepoint"]::before { background: var(--accent-sp); }
+  .card[data-type="useful"]::before { background: var(--accent-ul); }
+  .card[data-type="hw"]::before { background: var(--accent-hw); }
+  .card[data-type="iso"]::before { background: var(--accent-iso); }
+  .card[data-type="jira"]::before { background: var(--accent-jira); }
+  .card:hover { border-color: var(--border-strong); box-shadow: 0 2px 12px rgba(0,0,0,0.07); transform: translateY(-1px); }
+  .card:hover::before { opacity: 1; }
+
+  .card-icon {
+    width: 30px; height: 30px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px; flex-shrink: 0;
+  }
+  .card[data-type="confluence"] .card-icon { background: var(--accent-cf-light); }
+  .card[data-type="sharepoint"] .card-icon { background: var(--accent-sp-light); }
+  .card[data-type="useful"] .card-icon { background: var(--accent-ul-light); }
+  .card[data-type="hw"] .card-icon { background: var(--accent-hw-light); }
+  .card[data-type="iso"] .card-icon { background: var(--accent-iso-light); }
+  .card[data-type="jira"] .card-icon { background: var(--accent-jira-light); }
+  .card-icon svg { width: 15px; height: 15px; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .card[data-type="confluence"] .card-icon svg { stroke: var(--accent-cf); }
+  .card[data-type="sharepoint"] .card-icon svg { stroke: var(--accent-sp); }
+  .card[data-type="useful"] .card-icon svg { stroke: var(--accent-ul); }
+  .card[data-type="hw"] .card-icon svg { stroke: var(--accent-hw); }
+  .card[data-type="iso"] .card-icon svg { stroke: var(--accent-iso); }
+  .card[data-type="jira"] .card-icon svg { stroke: var(--accent-jira); }
+
+  .card-name { font-size: 14px; font-weight: 500; color: var(--text-primary); line-height: 1.35; margin-bottom: 6px; }
+  .card-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.55; flex: 1; margin-bottom: 12px; }
+  .card-footer {
+    display: flex; align-items: center; gap: 6px;
+    padding-top: 10px; border-top: 1px solid var(--border);
+  }
+  .card-tag {
+    font-size: 11px; font-family: 'DM Mono', monospace;
+    padding: 2px 7px; border-radius: 4px; flex-shrink: 0;
+  }
+  .card[data-type="confluence"] .card-tag { background: var(--accent-cf-light); color: var(--accent-cf); }
+  .card[data-type="sharepoint"] .card-tag { background: var(--accent-sp-light); color: var(--accent-sp); }
+  .card[data-type="useful"] .card-tag { background: var(--accent-ul-light); color: var(--accent-ul); }
+  .card[data-type="hw"] .card-tag { background: var(--accent-hw-light); color: var(--accent-hw); }
+  .card[data-type="iso"] .card-tag { background: var(--accent-iso-light); color: var(--accent-iso); }
+  .card[data-type="jira"] .card-tag { background: var(--accent-jira-light); color: var(--accent-jira); }
+  .card-url { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .card.hidden { display: none; }
+  .empty { grid-column: 1/-1; text-align: center; padding: 48px 0; color: var(--text-muted); font-size: 13px; }
+  .card-desc { display: none; }
+  .card-num {
+    position: absolute; top: 10px; right: 14px;
+    font-size: 11px; font-family: 'DM Mono', monospace;
+    color: var(--text-muted); line-height: 1;
+  }
+
+  .card { cursor: grab; }
+  .card.dragging { opacity: 0.35; cursor: grabbing; }
+  .card.drag-over { outline: 2px dashed var(--border-strong); outline-offset: -2px; }
+</style>
+</head>
+<body>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab active-cf" data-tab-type="confluence" onclick="switchTab('confluence', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/>
+    </svg>
+    Confluence
+    <span class="tab-count">12</span>
+  </button>
+  <button class="tab" data-tab-type="sharepoint" onclick="switchTab('sharepoint', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="3" width="20" height="14" rx="2"/>
+      <path d="M8 21h8M12 17v4"/>
+    </svg>
+    SharePoint
+    <span class="tab-count">7</span>
+  </button>
+  <button class="tab" data-tab-type="hw" onclick="switchTab('hw', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/>
+    </svg>
+    HW Product Homepage
+    <span class="tab-count">4</span>
+  </button>
+  <button class="tab" data-tab-type="iso" onclick="switchTab('iso', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+    ISO9001 Audit
+    <span class="tab-count">5</span>
+  </button>
+  <button class="tab" data-tab-type="jira" onclick="switchTab('jira', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+    </svg>
+    Jira Dashboards
+    <span class="tab-count">6</span>
+  </button>
+  <button class="tab" data-tab-type="useful" onclick="switchTab('useful', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+    </svg>
+    Useful Links
+    <span class="tab-count">6</span>
+  </button>
+</div>
+
+<!-- Search -->
+<div class="search-wrap">
+  <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+  <input type="text" id="searchInput" placeholder="搜尋連結名稱或描述..." oninput="filter()">
+</div>
+<div class="result-count" id="resultCount"></div>
+
+<!-- Cards -->
+<div class="cards-grid" id="grid">
+
+  <!-- Confluence -->
+  <a class="card" data-type="confluence" href="https://verifone.atlassian.net/wiki/spaces/HWEng/pages/266306906/HW+comments+on+PRDs" target="_blank"
+     data-name="HW Comments on PRDs" data-desc="Hardware team comments and feedback on Product Requirement Documents" data-tag="HWEng">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+    <div class="card-name">HW Comments on PRDs</div>
+    <div class="card-desc">Hardware team comments and feedback on Product Requirement Documents</div>
+    <div class="card-footer">
+      <span class="card-tag">HWEng</span>
+      <span class="card-url">spaces/HWEng/pages/266306906</span>
+    </div>
+  </a>
+
+  <a class="card" data-type="confluence" href="https://verifone.atlassian.net/wiki/spaces/GPH/pages/764510239/V310+Project+Tracker" target="_blank"
+     data-name="V310 Project Tracker" data-desc="V310 project tracker page" data-tag="GPH">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+    <div class="card-name">V310 Project Tracker</div>
+    <div class="card-desc">V310 project tracker page</div>
+    <div class="card-footer">
+      <span class="card-tag">GPH</span>
+      <span class="card-url">spaces/GPH/pages/764510239</span>
+    </div>
+  </a>
+
+  <a class="card" data-type="confluence" href="https://verifone.atlassian.net/wiki/spaces/KSP/pages/493796052/Cypher+-+MIB+Content+WIP" target="_blank"
+     data-name="Cypher MIB Content WIP" data-desc="Cypher MIB content work in progress documentation" data-tag="KSP">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+    <div class="card-name">Cypher — MIB Content WIP</div>
+    <div class="card-desc">Cypher MIB content work in progress documentation</div>
+    <div class="card-footer">
+      <span class="card-tag">KSP</span>
+      <span class="card-url">spaces/KSP/pages/493796052</span>
+    </div>
+  </a>
+
+  <a class="card" data-type="confluence" href="https://verifone.atlassian.net/wiki/spaces/GPH/pages/499223418/Hardware+NPI+SKU+Definition+and+Status" target="_blank"
+     data-name="Hardware NPI SKU Definition and Status" data-desc="Hardware NPI SKU definition and status tracking" data-tag="GPH">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+    <div class="card-name">Hardware NPI SKU Definition and Status</div>
+    <div class="card-desc">Hardware NPI SKU definition and status tracking</div>
+    <div class="card-footer">
+      <span class="card-tag">GPH</span>
+      <span class="card-url">spaces/GPH/pages/499223418</span>
+    </div>
+  </a>
+
+  <a class="card" data-type="confluence" href="https://verifone.atlassian.net/wiki/spaces/KSP/pages/493797132/Neo+Neo2+Neo3+Titus+MIB+content+for+Neo+Products" target="_blank"
+     data-name="Neo/Neo2/Neo3/Titus MIB Content" data-desc="MIB content for Neo-series products" data-tag="KSP">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+    <div class="card-name">Neo/Neo2/Neo3/Titus MIB Content</div>
+    <div class="card-desc">MIB content for Neo-series products</div>
+    <div class="card-footer">
+      <span class="card-tag">KSP</span>
+      <span class="card-url">spaces/KSP/pages/493797132</span>
+    </div>
+  </a>
+
+  <a class="card" data-type="confluence" href="https://verifone.atlassian.net/wiki/spaces/THE/pages/670171140/HWAMDOCS+Support+Tracking" target="_blank"
+     data-name="HWAMDOCS Support Tracking" data-desc="Hardware AMD documentation support tracking page" data-tag="THE">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+    <div class="card-name">HWAMDOCS Support Tracking</div>
+    <div class="card-desc">Hardware AMD documentation support tracking page</div>
+    <div class="card-footer">
+      <span class="card-tag">THE</span>
+      <span class="card-url">spaces/THE/pages/670171140</span>
+    </div>
+  </a>
+
+  <a class="card" data-type="confluence" href="https://verifone.atlassian.net/wiki/spaces/GPH/pages/499220603/Hardware+Engineering+Book+of+Work" target="_blank"
+     data-name="Hardware Engineering Book of Work" data-desc="HW Engineering program book of work — project pipeline and planning" data-tag="GPH">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+    <div class="card-name">Hardware Engineering Book of Work</div>
+    <div class="card-desc">HW Engineering program book of work — project pipeline and planning</div>
+    <div class="card-footer">
+      <span class="card-tag">GPH</span>
+      <span class="card-url">spaces/GPH/pages/499220603</span>
+    </div>
+  </a>
+
+  <a class="card" data-type="confluence" href="https://verifone.atlassian.net/wiki/spaces/GRC/overview" target="_blank"
+     data-name="Global Regulation & Compliance" data-desc="Global Regulation & Compliance Confluence space" data-tag="GRC">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+    <div class="card-name">Global Regulation & Compliance</div>
+    <div class="card-desc">Global Regulation & Compliance Confluence space</div>
+    <div class="card-footer">
+      <span class="card-tag">GRC</span>
+      <span class="card-url">spaces/GRC/overview</span>
+    </div>
+  </a>
+
+  <a class="card" data-type="confluence" href="https://verifone.atlassian.net/wiki/spaces/TPEse/pages/170656266/SE+product+support+ownership" target="_blank"
+     data-name="SE Product Support Ownership" data-desc="Taiwan SE team product support ownership matrix" data-tag="TPEse">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+    <div class="card-name">SE Product Support Ownership</div>
+    <div class="card-desc">Taiwan SE team product support ownership matrix</div>
+    <div class="card-footer">
+      <span class="card-tag">TPEse</span>
+      <span class="card-url">spaces/TPEse/pages/170656266</span>
+    </div>
+  </a>
+
+  <a class="card" data-type="confluence" href="https://verifone.atlassian.net/wiki/spaces/HWEng/pages/266306384/Debug+cable+cube+summary+table" target="_blank"
+     data-name="Debug Cable Cube Summary Table" data-desc="Debug cable and cube hardware summary table" data-tag="HWEng">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+    <div class="card-name">Debug Cable Cube Summary Table</div>
+    <div class="card-desc">Debug cable and cube hardware summary table</div>
+    <div class="card-footer">
+      <span class="card-tag">HWEng</span>
+      <span class="card-url">spaces/HWEng/pages/266306384</span>
+    </div>
+  </a>
+
+  <a class="card" data-type="confluence" href="https://verifone.atlassian.net/wiki/spaces/HWEng/overview?homepageId=266305538" target="_blank"
+     data-name="HWEng Space Overview" data-desc="Hardware Engineering Confluence space home" data-tag="HWEng">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+    <div class="card-name">HWEng Space Overview</div>
+    <div class="card-desc">Hardware Engineering Confluence space home</div>
+    <div class="card-footer">
+      <span class="card-tag">HWEng</span>
+      <span class="card-url">spaces/HWEng/overview</span>
+    </div>
+  </a>
+
+  <a class="card" data-type="confluence" href="https://verifone.atlassian.net/wiki/spaces/~IraR1/pages/447613914/Carrier+Certification+Notes" target="_blank"
+     data-name="Carrier Certification Notes" data-desc="Carrier certification notes and tracking" data-tag="~IraR1">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+    <div class="card-name">Carrier Certification Notes</div>
+    <div class="card-desc">Carrier certification notes and tracking</div>
+    <div class="card-footer">
+      <span class="card-tag">~IraR1</span>
+      <span class="card-url">spaces/~IraR1/pages/447613914</span>
+    </div>
+  </a>
+
+  <!-- SharePoint -->
+  <a class="card hidden" data-type="sharepoint" href="https://verifone365.sharepoint.com/:x:/s/BlackBoxRoadmapPublic/EUp8EQbARcBAvJygBcad7h0BDO32F8t6KQgwlQ_A2rapIA?wdOrigin=TEAMS-MAGLEV.p2p_ns.rwc&wdExp=TEAMS-TREATMENT&wdhostclicktime=1757645662464&web=1" target="_blank"
+     data-name="Pre Production Allocation Guide" data-desc="Pre Production Allocation Guide Excel document" data-tag="BlackBox">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+    <div class="card-name">Pre Production Allocation Guide</div>
+    <div class="card-desc">Pre Production Allocation Guide Excel document</div>
+    <div class="card-footer">
+      <span class="card-tag">BlackBox</span>
+      <span class="card-url">sites/BlackBoxRoadmapPublic</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="sharepoint"
+     href="https://verifone365.sharepoint.com/sites/RD/HWEng/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FRD%2FHWEng%2FShared%20Documents%2FPE%2DTPE%2FV310&viewid=1b34d1e4%2D09e2%2D4ff4%2D8743%2D1d3f22cad5d9&csf=1&web=1&e=fOEukd&cid=527d86c9%2Dd1cf%2D4cc0%2D99c1%2Df38da8f121b7&FolderCTID=0x012000C882FF3683F9C142A31803B4B7FC157E"
+     target="_blank" data-name="V310 Documents" data-desc="PE-TPE V310 product shared documents folder" data-tag="PE-TPE">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+    <div class="card-name">V310 — Documents</div>
+    <div class="card-desc">PE-TPE V310 product shared documents folder</div>
+    <div class="card-footer">
+      <span class="card-tag">PE-TPE</span>
+      <span class="card-url">HWEng / PE-TPE / V310</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="sharepoint" href="https://verifone365.sharepoint.com/:x:/r/sites/TPEadm/_layouts/15/Doc.aspx?sourcedoc=%7BD05BC9D0-67B4-4FF6-975C-834DC9C659FA%7D&file=HW%20NRE%20BRM%20FORECAST%20NEW%20EFFECTIVE%202021.xlsx&action=default&mobileredirect=true&cid=d9b6c4b4-f669-41ca-8a86-df74a3b55f03" target="_blank"
+     data-name="HW NRE BRM Forecast" data-desc="HW NRE BRM Forecast Excel — effective 2021" data-tag="TPEadm">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+    <div class="card-name">HW NRE BRM Forecast</div>
+    <div class="card-desc">HW NRE BRM Forecast Excel — effective 2021</div>
+    <div class="card-footer">
+      <span class="card-tag">TPEadm</span>
+      <span class="card-url">sites/TPEadm / HW NRE BRM FORECAST</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="sharepoint"
+     href="https://verifone365.sharepoint.com/sites/RD/HWEng/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=fOEukd&cid=527d86c9%2Dd1cf%2D4cc0%2D99c1%2Df38da8f121b7&FolderCTID=0x012000C882FF3683F9C142A31803B4B7FC157E&id=%2Fsites%2FRD%2FHWEng%2FShared%20Documents%2FPE%2DTPE%2FUX600%2D4G%2DA&viewid=1b34d1e4%2D09e2%2D4ff4%2D8743%2D1d3f22cad5d9"
+     target="_blank" data-name="UX600-4G-A Documents" data-desc="PE-TPE UX600-4G-A product shared documents folder" data-tag="PE-TPE">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+    <div class="card-name">UX600-4G-A — Documents</div>
+    <div class="card-desc">PE-TPE UX600-4G-A product shared documents folder</div>
+    <div class="card-footer">
+      <span class="card-tag">PE-TPE</span>
+      <span class="card-url">HWEng / PE-TPE / UX600-4G-A</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="sharepoint"
+     href="https://verifone365.sharepoint.com/sites/RD/HWEng/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=fOEukd&cid=527d86c9%2Dd1cf%2D4cc0%2D99c1%2Df38da8f121b7&FolderCTID=0x012000C882FF3683F9C142A31803B4B7FC157E&id=%2Fsites%2FRD%2FHWEng%2FShared%20Documents%2FPE%2DTPE%2FVR1%20%28e115%29&viewid=1b34d1e4%2D09e2%2D4ff4%2D8743%2D1d3f22cad5d9"
+     target="_blank" data-name="VR1 e115 Documents" data-desc="PE-TPE VR1 (e115) product shared documents folder" data-tag="PE-TPE">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+    <div class="card-name">VR1 (e115) — Documents</div>
+    <div class="card-desc">PE-TPE VR1 (e115) product shared documents folder</div>
+    <div class="card-footer">
+      <span class="card-tag">PE-TPE</span>
+      <span class="card-url">HWEng / PE-TPE / VR1 (e115)</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="sharepoint"
+     href="https://verifone365.sharepoint.com/sites/RD/HWEng/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=fOEukd&cid=527d86c9%2Dd1cf%2D4cc0%2D99c1%2Df38da8f121b7&FolderCTID=0x012000C882FF3683F9C142A31803B4B7FC157E&id=%2Fsites%2FRD%2FHWEng%2FShared%20Documents%2FPE%2DTPE%2FUX700%2DA&viewid=1b34d1e4%2D09e2%2D4ff4%2D8743%2D1d3f22cad5d9"
+     target="_blank" data-name="UX700-A Documents" data-desc="PE-TPE UX700-A product shared documents folder" data-tag="PE-TPE">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+    <div class="card-name">UX700-A — Documents</div>
+    <div class="card-desc">PE-TPE UX700-A product shared documents folder</div>
+    <div class="card-footer">
+      <span class="card-tag">PE-TPE</span>
+      <span class="card-url">HWEng / PE-TPE / UX700-A</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="sharepoint" href="https://verifone365.sharepoint.com/:x:/s/RD/HWEng/IQDGMv_H2NfaSItrTz5uIJ3fAXeY1ZbruQGvQ9vUfyS4lVQ?e=4L7AVr" target="_blank"
+     data-name="First Out Certs" data-desc="HWEng First Out Certs Excel document" data-tag="HWEng">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+    <div class="card-name">First Out Certs</div>
+    <div class="card-desc">HWEng First Out Certs Excel document</div>
+    <div class="card-footer">
+      <span class="card-tag">HWEng</span>
+      <span class="card-url">verifone365.sharepoint.com / RD / HWEng</span>
+    </div>
+  </a>
+
+  <!-- HW Product Homepage -->
+  <a class="card hidden" data-type="hw" href="https://verifone.atlassian.net/wiki/spaces/HWEng/pages/266451948/V310+project+HW+home" target="_blank"
+     data-name="V310 HW Home" data-desc="V310 project Hardware home page" data-tag="HWEng">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg></div>
+    <div class="card-name">V310 HW Home</div>
+    <div class="card-desc">V310 project Hardware home page</div>
+    <div class="card-footer">
+      <span class="card-tag">HWEng</span>
+      <span class="card-url">spaces/HWEng/pages/266451948</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="hw" href="https://verifone.atlassian.net/wiki/spaces/HWEng/pages/266451703/UX600-A+project+HW+home" target="_blank"
+     data-name="UX600-A HW Home" data-desc="UX600-A project Hardware home page" data-tag="HWEng">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg></div>
+    <div class="card-name">UX600-A HW Home</div>
+    <div class="card-desc">UX600-A project Hardware home page</div>
+    <div class="card-footer">
+      <span class="card-tag">HWEng</span>
+      <span class="card-url">spaces/HWEng/pages/266451703</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="hw" href="https://verifone.atlassian.net/wiki/spaces/HWEng/pages/266306615/VR1+project+HW+home" target="_blank"
+     data-name="VR1 HW Home" data-desc="VR1 project Hardware home page" data-tag="HWEng">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg></div>
+    <div class="card-name">VR1 HW Home</div>
+    <div class="card-desc">VR1 project Hardware home page</div>
+    <div class="card-footer">
+      <span class="card-tag">HWEng</span>
+      <span class="card-url">spaces/HWEng/pages/266306615</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="hw" href="https://verifone.atlassian.net/wiki/spaces/HWEng/pages/266306758/UX700-A+project+HW+home" target="_blank"
+     data-name="UX700-A HW Home" data-desc="UX700-A project Hardware home page" data-tag="HWEng">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg></div>
+    <div class="card-name">UX700-A HW Home</div>
+    <div class="card-desc">UX700-A project Hardware home page</div>
+    <div class="card-footer">
+      <span class="card-tag">HWEng</span>
+      <span class="card-url">spaces/HWEng/pages/266306758</span>
+    </div>
+  </a>
+
+  <!-- ISO9001 Audit -->
+  <a class="card hidden" data-type="iso" href="https://verifone.atlassian.net/wiki/spaces/HWEng/pages/266306731/ISO9001+audit" target="_blank"
+     data-name="ISO9001 Audit" data-desc="ISO9001 audit overview page" data-tag="HWEng">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div class="card-name">ISO9001 Audit</div>
+    <div class="card-desc">ISO9001 audit overview page</div>
+    <div class="card-footer">
+      <span class="card-tag">HWEng</span>
+      <span class="card-url">spaces/HWEng/pages/266306731</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="iso" href="https://verifone.atlassian.net/wiki/spaces/HWEng/pages/266451034/V310+ISO9001+audit+FY25" target="_blank"
+     data-name="V310 ISO9001 Audit FY25" data-desc="V310 ISO9001 audit for FY25" data-tag="HWEng">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div class="card-name">V310 ISO9001 Audit FY25</div>
+    <div class="card-desc">V310 ISO9001 audit for FY25</div>
+    <div class="card-footer">
+      <span class="card-tag">HWEng</span>
+      <span class="card-url">spaces/HWEng/pages/266451034</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="iso" href="https://verifone.atlassian.net/wiki/spaces/HWEng/pages/266444498/ISO9001+audit+for+VR1" target="_blank"
+     data-name="ISO9001 Audit for VR1" data-desc="VR1 ISO9001 audit page" data-tag="HWEng">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div class="card-name">ISO9001 Audit for VR1</div>
+    <div class="card-desc">VR1 ISO9001 audit page</div>
+    <div class="card-footer">
+      <span class="card-tag">HWEng</span>
+      <span class="card-url">spaces/HWEng/pages/266444498</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="iso" href="https://verifone.atlassian.net/wiki/spaces/HWEng/pages/266444082/ISO9001+audit+for+UX700-A" target="_blank"
+     data-name="ISO9001 Audit for UX700-A" data-desc="UX700-A ISO9001 audit page" data-tag="HWEng">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div class="card-name">ISO9001 Audit for UX700-A</div>
+    <div class="card-desc">UX700-A ISO9001 audit page</div>
+    <div class="card-footer">
+      <span class="card-tag">HWEng</span>
+      <span class="card-url">spaces/HWEng/pages/266444082</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="iso" href="https://verifone.atlassian.net/wiki/spaces/HWEng/pages/266443025/UX600-A+ISO9001+audit+FY24" target="_blank"
+     data-name="UX600-A ISO9001 Audit FY24" data-desc="UX600-A ISO9001 audit for FY24" data-tag="HWEng">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div class="card-name">UX600-A ISO9001 Audit FY24</div>
+    <div class="card-desc">UX600-A ISO9001 audit for FY24</div>
+    <div class="card-footer">
+      <span class="card-tag">HWEng</span>
+      <span class="card-url">spaces/HWEng/pages/266443025</span>
+    </div>
+  </a>
+
+  <!-- Jira Dashboards -->
+  <a class="card hidden" data-type="jira" href="https://verifone.atlassian.net/jira/dashboards/19461" target="_blank"
+     data-name="Timesheet" data-desc="Jira Timesheet dashboard" data-tag="Jira">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+    <div class="card-name">Timesheet</div>
+    <div class="card-desc">Jira Timesheet dashboard</div>
+    <div class="card-footer">
+      <span class="card-tag">Jira</span>
+      <span class="card-url">jira/dashboards/19461</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="jira" href="https://verifone.atlassian.net/jira/dashboards/19389" target="_blank"
+     data-name="General Dashboard" data-desc="Jira General Dashboard" data-tag="Jira">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+    <div class="card-name">General Dashboard</div>
+    <div class="card-desc">Jira General Dashboard</div>
+    <div class="card-footer">
+      <span class="card-tag">Jira</span>
+      <span class="card-url">jira/dashboards/19389</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="jira" href="https://verifone.atlassian.net/jira/dashboards/19111" target="_blank"
+     data-name="V310" data-desc="Jira V310 dashboard" data-tag="Jira">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+    <div class="card-name">V310</div>
+    <div class="card-desc">Jira V310 dashboard</div>
+    <div class="card-footer">
+      <span class="card-tag">Jira</span>
+      <span class="card-url">jira/dashboards/19111</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="jira" href="https://verifone.atlassian.net/jira/dashboards/19118" target="_blank"
+     data-name="UX700-A" data-desc="Jira UX700-A dashboard" data-tag="Jira">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+    <div class="card-name">UX700-A</div>
+    <div class="card-desc">Jira UX700-A dashboard</div>
+    <div class="card-footer">
+      <span class="card-tag">Jira</span>
+      <span class="card-url">jira/dashboards/19118</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="jira" href="https://verifone.atlassian.net/jira/dashboards/19384" target="_blank"
+     data-name="UX600-A" data-desc="Jira UX600-A dashboard" data-tag="Jira">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+    <div class="card-name">UX600-A</div>
+    <div class="card-desc">Jira UX600-A dashboard</div>
+    <div class="card-footer">
+      <span class="card-tag">Jira</span>
+      <span class="card-url">jira/dashboards/19384</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="jira" href="https://verifone.atlassian.net/jira/dashboards/17449" target="_blank"
+     data-name="VR1 (Victa Reader)" data-desc="Jira VR1 Victa Reader dashboard" data-tag="Jira">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+    <div class="card-name">VR1 (Victa Reader)</div>
+    <div class="card-desc">Jira VR1 Victa Reader dashboard</div>
+    <div class="card-footer">
+      <span class="card-tag">Jira</span>
+      <span class="card-url">jira/dashboards/17449</span>
+    </div>
+  </a>
+
+  <!-- Useful Links -->
+  <a class="card hidden" data-type="useful" href="https://ebiz.verifone.com/OA_HTML/OA.jsp?OAFunc=OAHOMEPAGE" target="_blank"
+     data-name="eBiz" data-desc="Verifone eBusiness portal" data-tag="eBiz">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+    <div class="card-name">eBiz</div>
+    <div class="card-desc">Verifone eBusiness portal</div>
+    <div class="card-footer">
+      <span class="card-tag">eBiz</span>
+      <span class="card-url">ebiz.verifone.com</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="useful" href="https://www.myworkday.com/verifone/d/home.htmld#path=" target="_blank"
+     data-name="Workday" data-desc="Verifone HR portal — time, payroll, and benefits" data-tag="HR">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+    <div class="card-name">Workday</div>
+    <div class="card-desc">Verifone HR portal — time, payroll, and benefits</div>
+    <div class="card-footer">
+      <span class="card-tag">HR</span>
+      <span class="card-url">myworkday.com/verifone</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="useful" href="https://agile.verifone.com/Agile/default/login-cms.jsp" target="_blank"
+     data-name="Agile" data-desc="Verifone Agile portal" data-tag="Agile">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+    <div class="card-name">Agile</div>
+    <div class="card-desc">Verifone Agile portal</div>
+    <div class="card-footer">
+      <span class="card-tag">Agile</span>
+      <span class="card-url">agile.verifone.com</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="useful" href="https://verifone365.sharepoint.com/sites/ONE/Pages/HomePage.aspx" target="_blank"
+     data-name="Verifone ONE" data-desc="Verifone intranet home page" data-tag="Intranet">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+    <div class="card-name">Verifone ONE</div>
+    <div class="card-desc">Verifone intranet home page</div>
+    <div class="card-footer">
+      <span class="card-tag">Intranet</span>
+      <span class="card-url">sites/ONE/Pages/HomePage</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="useful" href="https://verifone.atlassian.net/jira/software/c/projects/GBLTSSA/boards/5274" target="_blank"
+     data-name="Time Sheet Absence" data-desc="Time sheet and absence tracking on Jira" data-tag="Jira">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+    <div class="card-name">Time Sheet Absence</div>
+    <div class="card-desc">Time sheet and absence tracking on Jira</div>
+    <div class="card-footer">
+      <span class="card-tag">Jira</span>
+      <span class="card-url">projects/GBLTSSA/boards/5274</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="useful" href="https://directory.zoho.com/directory/verifone/home#/myapps" target="_blank"
+     data-name="Zoho Directory" data-desc="Verifone Zoho app directory" data-tag="Zoho">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+    <div class="card-name">Zoho Directory</div>
+    <div class="card-desc">Verifone Zoho app directory</div>
+    <div class="card-footer">
+      <span class="card-tag">Zoho</span>
+      <span class="card-url">directory.zoho.com/verifone</span>
+    </div>
+  </a>
+
+</div>
+
+<script>
+let currentType = 'confluence';
+
+function switchTab(type, el) {
+  currentType = type;
+  document.querySelectorAll('.tab').forEach(t => t.className = 'tab');
+  const suffixMap = { confluence: 'cf', sharepoint: 'sp', hw: 'hw', iso: 'iso', jira: 'jira', useful: 'ul' };
+  el.className = 'tab active-' + (suffixMap[type] ?? 'cf');
+
+  const input = document.getElementById('searchInput');
+  const focusMap = { sharepoint: 'sp-focus', hw: 'hw-focus', iso: 'iso-focus', jira: 'jira-focus', useful: 'ul-focus' };
+  input.className = focusMap[type] ?? '';
+  input.value = '';
+  document.getElementById('resultCount').textContent = '';
+
+  filter();
+}
+
+function filter() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const cards = document.querySelectorAll('.card');
+  let visible = 0;
+  document.querySelector('.empty')?.remove();
+
+  cards.forEach(c => {
+    const typeMatch = c.dataset.type === currentType;
+    const textMatch = !q || (c.dataset.name + ' ' + c.dataset.desc + ' ' + c.dataset.tag).toLowerCase().includes(q);
+    const show = typeMatch && textMatch;
+    c.classList.toggle('hidden', !show);
+    if (show) visible++;
+  });
+
+  const total = document.querySelectorAll(`.card[data-type="${currentType}"]`).length;
+  const rc = document.getElementById('resultCount');
+  rc.textContent = q ? `顯示 ${visible} / ${total} 筆` : '';
+
+  if (visible === 0) {
+    const el = document.createElement('div');
+    el.className = 'empty';
+    el.textContent = '找不到符合的連結';
+    document.getElementById('grid').appendChild(el);
+  }
+  numberCards();
+}
+
+function numberCards() {
+  document.querySelectorAll('.card-num').forEach(n => n.textContent = '');
+  document.querySelectorAll(`.card[data-type="${currentType}"]:not(.hidden)`)
+    .forEach((card, i) => {
+      const num = card.querySelector('.card-num');
+      if (num) num.textContent = i + 1;
+    });
+}
+
+function initCardNums() {
+  document.querySelectorAll('.card').forEach(card => {
+    const num = document.createElement('span');
+    num.className = 'card-num';
+    card.appendChild(num);
+  });
+}
+
+// drag & drop
+let dragSrc = null;
+
+function initDrag() {
+  document.querySelectorAll('.card').forEach(card => {
+    card.setAttribute('draggable', true);
+    card.addEventListener('dragstart', e => {
+      dragSrc = card;
+      setTimeout(() => card.classList.add('dragging'), 0);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      document.querySelectorAll('.card.drag-over').forEach(c => c.classList.remove('drag-over'));
+      saveOrder();
+      numberCards();
+    });
+    card.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (!dragSrc || card === dragSrc || card.dataset.type !== dragSrc.dataset.type) return;
+      document.querySelectorAll('.card.drag-over').forEach(c => c.classList.remove('drag-over'));
+      card.classList.add('drag-over');
+    });
+    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+    card.addEventListener('drop', e => {
+      e.preventDefault();
+      if (!dragSrc || card === dragSrc || card.dataset.type !== dragSrc.dataset.type) return;
+      card.classList.remove('drag-over');
+      const rect = card.getBoundingClientRect();
+      if (e.clientY < rect.top + rect.height / 2) {
+        card.before(dragSrc);
+      } else {
+        card.after(dragSrc);
+      }
+    });
+  });
+}
+
+function saveOrder() {
+  ['confluence', 'sharepoint', 'hw', 'iso', 'jira', 'useful'].forEach(type => {
+    const hrefs = [...document.querySelectorAll(`.card[data-type="${type}"]`)].map(c => c.href);
+    localStorage.setItem('order-' + type, JSON.stringify(hrefs));
+  });
+}
+
+function loadOrder() {
+  const grid = document.getElementById('grid');
+  ['confluence', 'sharepoint', 'hw', 'iso', 'jira', 'useful'].forEach(type => {
+    const saved = localStorage.getItem('order-' + type);
+    if (!saved) return;
+    try {
+      const order = JSON.parse(saved);
+      const cards = [...document.querySelectorAll(`.card[data-type="${type}"]`)];
+      const cardMap = {};
+      cards.forEach(c => cardMap[c.href] = c);
+      const afterLast = cards[cards.length - 1]?.nextSibling ?? null;
+      const frag = document.createDocumentFragment();
+      order.forEach(href => { if (cardMap[href]) frag.appendChild(cardMap[href]); });
+      grid.insertBefore(frag, afterLast);
+    } catch(e) {}
+  });
+}
+
+// tab drag & drop
+let dragSrcTab = null;
+
+function initTabDrag() {
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.setAttribute('draggable', true);
+    tab.addEventListener('dragstart', e => {
+      dragSrcTab = tab;
+      dragSrc = null;
+      setTimeout(() => tab.classList.add('dragging-tab'), 0);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    tab.addEventListener('dragend', () => {
+      tab.classList.remove('dragging-tab');
+      document.querySelectorAll('.tab.drag-over-tab').forEach(t => t.classList.remove('drag-over-tab'));
+      saveTabOrder();
+    });
+    tab.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (!dragSrcTab || tab === dragSrcTab) return;
+      document.querySelectorAll('.tab.drag-over-tab').forEach(t => t.classList.remove('drag-over-tab'));
+      tab.classList.add('drag-over-tab');
+    });
+    tab.addEventListener('dragleave', () => tab.classList.remove('drag-over-tab'));
+    tab.addEventListener('drop', e => {
+      e.preventDefault();
+      if (!dragSrcTab || tab === dragSrcTab) return;
+      tab.classList.remove('drag-over-tab');
+      const rect = tab.getBoundingClientRect();
+      if (e.clientX < rect.left + rect.width / 2) {
+        tab.before(dragSrcTab);
+      } else {
+        tab.after(dragSrcTab);
+      }
+      dragSrcTab = null;
+    });
+  });
+}
+
+function saveTabOrder() {
+  const order = [...document.querySelectorAll('.tab')].map(t => t.dataset.tabType);
+  localStorage.setItem('tab-order', JSON.stringify(order));
+}
+
+function loadTabOrder() {
+  const saved = localStorage.getItem('tab-order');
+  if (!saved) return;
+  try {
+    const order = JSON.parse(saved);
+    const tabsEl = document.querySelector('.tabs');
+    const tabMap = {};
+    document.querySelectorAll('.tab').forEach(t => tabMap[t.dataset.tabType] = t);
+    order.forEach(type => { if (tabMap[type]) tabsEl.appendChild(tabMap[type]); });
+  } catch(e) {}
+}
+
+// init
+const ORDER_VERSION = '2';
+if (localStorage.getItem('order-version') !== ORDER_VERSION) {
+  ['confluence', 'sharepoint', 'hw', 'iso', 'jira', 'useful'].forEach(t => localStorage.removeItem('order-' + t));
+  localStorage.removeItem('tab-order');
+  localStorage.setItem('order-version', ORDER_VERSION);
+}
+loadTabOrder();
+loadOrder();
+initCardNums();
+filter();
+initDrag();
+initTabDrag();
+</script>
+</body>
+</html>
