@@ -226,7 +226,7 @@
       <line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/>
     </svg>
     Confluence
-    <span class="tab-count">12</span>
+    <span class="tab-count">13</span>
   </button>
   <button class="tab" data-tab-type="sharepoint" onclick="switchTab('sharepoint', this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -303,6 +303,17 @@
     <div class="card-footer">
       <span class="card-tag">GPH</span>
       <span class="card-url">spaces/GPH/pages/764510239</span>
+    </div>
+  </a>
+
+  <a class="card" data-type="confluence" href="https://verifone.atlassian.net/wiki/spaces/GPH/pages/791085159/Verifone+Touch+Project+Tracker" target="_blank"
+     data-name="Verifone Touch Project Tracker" data-desc="Verifone Touch project tracker page" data-tag="GPH">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+    <div class="card-name">Verifone Touch Project Tracker</div>
+    <div class="card-desc">Verifone Touch project tracker page</div>
+    <div class="card-footer">
+      <span class="card-tag">GPH</span>
+      <span class="card-url">spaces/GPH/pages/791085159</span>
     </div>
   </a>
 
@@ -949,7 +960,7 @@ function loadTabOrder() {
 }
 
 // init
-const ORDER_VERSION = '3';
+const ORDER_VERSION = '4';
 if (localStorage.getItem('order-version') !== ORDER_VERSION) {
   ['confluence', 'sharepoint', 'hw', 'iso', 'jira', 'useful', 'prompt'].forEach(t => localStorage.removeItem('order-' + t));
   localStorage.removeItem('tab-order');
