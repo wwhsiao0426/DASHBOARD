@@ -28,6 +28,8 @@
     --accent-iso-light: #CFFAFE;
     --accent-jira: #B45309;
     --accent-jira-light: #FEF3C7;
+    --accent-pt: #BE185D;
+    --accent-pt-light: #FCE7F3;
     --tag-bg: #EEECEA;
     --radius: 10px;
     --radius-sm: 6px;
@@ -80,6 +82,8 @@
   .tab.active-iso .tab-count { background: #a5f3fc; color: var(--accent-iso); }
   .tab.active-jira { background: var(--accent-jira-light); color: var(--accent-jira); }
   .tab.active-jira .tab-count { background: #fde68a; color: var(--accent-jira); }
+  .tab.active-pt { background: var(--accent-pt-light); color: var(--accent-pt); }
+  .tab.active-pt .tab-count { background: #fbcfe8; color: var(--accent-pt); }
   .tab.dragging-tab { opacity: 0.4; }
   .tab.drag-over-tab { outline: 2px dashed var(--border-strong); outline-offset: -2px; }
 
@@ -113,6 +117,7 @@
   .search-wrap input.hw-focus:focus { border-color: var(--accent-hw); box-shadow: 0 0 0 3px var(--accent-hw-light); }
   .search-wrap input.iso-focus:focus { border-color: var(--accent-iso); box-shadow: 0 0 0 3px var(--accent-iso-light); }
   .search-wrap input.jira-focus:focus { border-color: var(--accent-jira); box-shadow: 0 0 0 3px var(--accent-jira-light); }
+  .search-wrap input.pt-focus:focus { border-color: var(--accent-pt); box-shadow: 0 0 0 3px var(--accent-pt-light); }
   .search-wrap input::placeholder { color: var(--text-muted); }
 
   .result-count { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; min-height: 18px; }
@@ -143,6 +148,7 @@
   .card[data-type="hw"]::before { background: var(--accent-hw); }
   .card[data-type="iso"]::before { background: var(--accent-iso); }
   .card[data-type="jira"]::before { background: var(--accent-jira); }
+  .card[data-type="prompt"]::before { background: var(--accent-pt); }
   .card:hover { border-color: var(--border-strong); box-shadow: 0 2px 12px rgba(0,0,0,0.07); transform: translateY(-1px); }
   .card:hover::before { opacity: 1; }
 
@@ -157,6 +163,7 @@
   .card[data-type="hw"] .card-icon { background: var(--accent-hw-light); }
   .card[data-type="iso"] .card-icon { background: var(--accent-iso-light); }
   .card[data-type="jira"] .card-icon { background: var(--accent-jira-light); }
+  .card[data-type="prompt"] .card-icon { background: var(--accent-pt-light); }
   .card-icon svg { width: 15px; height: 15px; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   .card[data-type="confluence"] .card-icon svg { stroke: var(--accent-cf); }
   .card[data-type="sharepoint"] .card-icon svg { stroke: var(--accent-sp); }
@@ -164,6 +171,7 @@
   .card[data-type="hw"] .card-icon svg { stroke: var(--accent-hw); }
   .card[data-type="iso"] .card-icon svg { stroke: var(--accent-iso); }
   .card[data-type="jira"] .card-icon svg { stroke: var(--accent-jira); }
+  .card[data-type="prompt"] .card-icon svg { stroke: var(--accent-pt); }
 
   .card-name { font-size: 14px; font-weight: 500; color: var(--text-primary); line-height: 1.35; margin-bottom: 6px; }
   .card-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.55; flex: 1; margin-bottom: 12px; }
@@ -181,8 +189,18 @@
   .card[data-type="hw"] .card-tag { background: var(--accent-hw-light); color: var(--accent-hw); }
   .card[data-type="iso"] .card-tag { background: var(--accent-iso-light); color: var(--accent-iso); }
   .card[data-type="jira"] .card-tag { background: var(--accent-jira-light); color: var(--accent-jira); }
+  .card[data-type="prompt"] .card-tag { background: var(--accent-pt-light); color: var(--accent-pt); }
   .card-url { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+  .card-prompt {
+    font-size: 12px; color: var(--text-secondary); line-height: 1.55;
+    flex: 1; margin-bottom: 12px;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card[data-type="prompt"] { cursor: pointer; }
+  .card[data-type="prompt"]:active { transform: scale(0.98); }
+  .copy-flash { color: var(--accent-pt) !important; font-weight: 500; }
   .card.hidden { display: none; }
   .empty { grid-column: 1/-1; text-align: center; padding: 48px 0; color: var(--text-muted); font-size: 13px; }
   .card-desc { display: none; }
@@ -245,6 +263,13 @@
     </svg>
     Useful Links
     <span class="tab-count">6</span>
+  </button>
+  <button class="tab" data-tab-type="prompt" onclick="switchTab('prompt', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    Useful Prompt
+    <span class="tab-count">1</span>
   </button>
 </div>
 
@@ -708,6 +733,21 @@
     </div>
   </a>
 
+
+  <!-- Useful Prompt -->
+  <div class="card hidden" data-type="prompt"
+       data-name="GHPN Status Summary" data-desc="Collect GHPN Jira tickets for UX700 with update status" data-tag="Jira"
+       data-prompt="collect all GHPN jira tickets related to UX700 with status shows &quot;update&quot; and make a summary table which includes action items in comment."
+       onclick="copyPrompt(this)">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+    <div class="card-name">GHPN Status Summary</div>
+    <div class="card-prompt">collect all GHPN jira tickets related to UX700 with status shows "update" and make a summary table which includes action items in comment.</div>
+    <div class="card-footer">
+      <span class="card-tag">Jira</span>
+      <span class="card-url">Click to copy</span>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -716,11 +756,11 @@ let currentType = 'confluence';
 function switchTab(type, el) {
   currentType = type;
   document.querySelectorAll('.tab').forEach(t => t.className = 'tab');
-  const suffixMap = { confluence: 'cf', sharepoint: 'sp', hw: 'hw', iso: 'iso', jira: 'jira', useful: 'ul' };
+  const suffixMap = { confluence: 'cf', sharepoint: 'sp', hw: 'hw', iso: 'iso', jira: 'jira', useful: 'ul', prompt: 'pt' };
   el.className = 'tab active-' + (suffixMap[type] ?? 'cf');
 
   const input = document.getElementById('searchInput');
-  const focusMap = { sharepoint: 'sp-focus', hw: 'hw-focus', iso: 'iso-focus', jira: 'jira-focus', useful: 'ul-focus' };
+  const focusMap = { sharepoint: 'sp-focus', hw: 'hw-focus', iso: 'iso-focus', jira: 'jira-focus', useful: 'ul-focus', prompt: 'pt-focus' };
   input.className = focusMap[type] ?? '';
   input.value = '';
   document.getElementById('resultCount').textContent = '';
@@ -810,28 +850,45 @@ function initDrag() {
   });
 }
 
+function cardKey(c) {
+  return c.dataset.type === 'prompt' ? ('prompt:' + c.dataset.name) : c.href;
+}
+
 function saveOrder() {
-  ['confluence', 'sharepoint', 'hw', 'iso', 'jira', 'useful'].forEach(type => {
-    const hrefs = [...document.querySelectorAll(`.card[data-type="${type}"]`)].map(c => c.href);
-    localStorage.setItem('order-' + type, JSON.stringify(hrefs));
+  ['confluence', 'sharepoint', 'hw', 'iso', 'jira', 'useful', 'prompt'].forEach(type => {
+    const keys = [...document.querySelectorAll(`.card[data-type="${type}"]`)].map(cardKey);
+    localStorage.setItem('order-' + type, JSON.stringify(keys));
   });
 }
 
 function loadOrder() {
   const grid = document.getElementById('grid');
-  ['confluence', 'sharepoint', 'hw', 'iso', 'jira', 'useful'].forEach(type => {
+  ['confluence', 'sharepoint', 'hw', 'iso', 'jira', 'useful', 'prompt'].forEach(type => {
     const saved = localStorage.getItem('order-' + type);
     if (!saved) return;
     try {
       const order = JSON.parse(saved);
       const cards = [...document.querySelectorAll(`.card[data-type="${type}"]`)];
       const cardMap = {};
-      cards.forEach(c => cardMap[c.href] = c);
+      cards.forEach(c => cardMap[cardKey(c)] = c);
       const afterLast = cards[cards.length - 1]?.nextSibling ?? null;
       const frag = document.createDocumentFragment();
-      order.forEach(href => { if (cardMap[href]) frag.appendChild(cardMap[href]); });
+      order.forEach(key => { if (cardMap[key]) frag.appendChild(cardMap[key]); });
       grid.insertBefore(frag, afterLast);
     } catch(e) {}
+  });
+}
+
+function copyPrompt(card) {
+  const text = card.dataset.prompt;
+  navigator.clipboard.writeText(text).then(() => {
+    const urlEl = card.querySelector('.card-url');
+    urlEl.classList.add('copy-flash');
+    urlEl.textContent = 'Copied!';
+    setTimeout(() => {
+      urlEl.classList.remove('copy-flash');
+      urlEl.textContent = 'Click to copy';
+    }, 1500);
   });
 }
 
@@ -892,9 +949,9 @@ function loadTabOrder() {
 }
 
 // init
-const ORDER_VERSION = '2';
+const ORDER_VERSION = '3';
 if (localStorage.getItem('order-version') !== ORDER_VERSION) {
-  ['confluence', 'sharepoint', 'hw', 'iso', 'jira', 'useful'].forEach(t => localStorage.removeItem('order-' + t));
+  ['confluence', 'sharepoint', 'hw', 'iso', 'jira', 'useful', 'prompt'].forEach(t => localStorage.removeItem('order-' + t));
   localStorage.removeItem('tab-order');
   localStorage.setItem('order-version', ORDER_VERSION);
 }
