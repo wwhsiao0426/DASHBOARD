@@ -234,7 +234,7 @@
       <path d="M8 21h8M12 17v4"/>
     </svg>
     SharePoint
-    <span class="tab-count">7</span>
+    <span class="tab-count">8</span>
   </button>
   <button class="tab" data-tab-type="hw" onclick="switchTab('hw', this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -503,6 +503,17 @@
     <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
     <div class="card-name">First Out Certs</div>
     <div class="card-desc">HWEng First Out Certs Excel document</div>
+    <div class="card-footer">
+      <span class="card-tag">HWEng</span>
+      <span class="card-url">verifone365.sharepoint.com / RD / HWEng</span>
+    </div>
+  </a>
+
+  <a class="card hidden" data-type="sharepoint" href="https://verifone365.sharepoint.com/:x:/s/RD/HWEng/IQA2oIWrQM73S7_nUpXnY0-FARner7kximhrB-RcEqmN1mc?e=uFlN13" target="_blank"
+     data-name="PR for Sachin" data-desc="PR for Sachin SharePoint document" data-tag="HWEng">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+    <div class="card-name">PR for Sachin</div>
+    <div class="card-desc">PR for Sachin SharePoint document</div>
     <div class="card-footer">
       <span class="card-tag">HWEng</span>
       <span class="card-url">verifone365.sharepoint.com / RD / HWEng</span>
@@ -960,7 +971,7 @@ function loadTabOrder() {
 }
 
 // init
-const ORDER_VERSION = '4';
+const ORDER_VERSION = '5';
 if (localStorage.getItem('order-version') !== ORDER_VERSION) {
   ['confluence', 'sharepoint', 'hw', 'iso', 'jira', 'useful', 'prompt'].forEach(t => localStorage.removeItem('order-' + t));
   localStorage.removeItem('tab-order');
