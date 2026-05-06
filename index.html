@@ -262,7 +262,7 @@
       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
     </svg>
     Useful Links
-    <span class="tab-count">6</span>
+    <span class="tab-count">7</span>
   </button>
   <button class="tab" data-tab-type="prompt" onclick="switchTab('prompt', this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -755,6 +755,17 @@
     </div>
   </a>
 
+  <a class="card hidden" data-type="useful" href="https://revenueops.verifone.com/auth/login-page" target="_blank"
+     data-name="Verifone Revenue" data-desc="Verifone Revenue Operations portal" data-tag="Revenue">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+    <div class="card-name">Verifone Revenue</div>
+    <div class="card-desc">Verifone Revenue Operations portal</div>
+    <div class="card-footer">
+      <span class="card-tag">Revenue</span>
+      <span class="card-url">revenueops.verifone.com</span>
+    </div>
+  </a>
+
 
   <!-- Useful Prompt -->
   <div class="card hidden" data-type="prompt"
@@ -971,7 +982,7 @@ function loadTabOrder() {
 }
 
 // init
-const ORDER_VERSION = '5';
+const ORDER_VERSION = '6';
 if (localStorage.getItem('order-version') !== ORDER_VERSION) {
   ['confluence', 'sharepoint', 'hw', 'iso', 'jira', 'useful', 'prompt'].forEach(t => localStorage.removeItem('order-' + t));
   localStorage.removeItem('tab-order');
