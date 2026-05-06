@@ -219,6 +219,13 @@
 
 <!-- Tabs -->
 <div class="tabs">
+  <button class="tab" data-tab-type="jira" onclick="switchTab('jira', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+    </svg>
+    Jira Dashboards
+    <span class="tab-count">6</span>
+  </button>
   <button class="tab active-cf" data-tab-type="confluence" onclick="switchTab('confluence', this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
@@ -249,13 +256,6 @@
     </svg>
     ISO9001 Audit
     <span class="tab-count">5</span>
-  </button>
-  <button class="tab" data-tab-type="jira" onclick="switchTab('jira', this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
-    </svg>
-    Jira Dashboards
-    <span class="tab-count">6</span>
   </button>
   <button class="tab" data-tab-type="useful" onclick="switchTab('useful', this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -982,7 +982,7 @@ function loadTabOrder() {
 }
 
 // init
-const ORDER_VERSION = '6';
+const ORDER_VERSION = '7';
 if (localStorage.getItem('order-version') !== ORDER_VERSION) {
   ['confluence', 'sharepoint', 'hw', 'iso', 'jira', 'useful', 'prompt'].forEach(t => localStorage.removeItem('order-' + t));
   localStorage.removeItem('tab-order');
