@@ -18,6 +18,7 @@
     --accent-touch:  #4F46E5; --accent-touch-light:  #E0E7FF;
     --accent-mpos:   #0284C7; --accent-mpos-light:   #E0F2FE;
     --accent-bbpos:  #DC2626; --accent-bbpos-light:  #FEE2E2;
+    --accent-titus:  #F97316; --accent-titus-light:  #FFEDD5;
     --accent-gen:    #B45309; --accent-gen-light:    #FEF3C7;
     --accent-ul:     #C2410C; --accent-ul-light:     #FFF7ED;
     --accent-pt:     #BE185D; --accent-pt-light:     #FCE7F3;
@@ -39,6 +40,7 @@
   .tab.active-touch  { background: var(--accent-touch-light);  color: var(--accent-touch); }
   .tab.active-mpos   { background: var(--accent-mpos-light);   color: var(--accent-mpos); }
   .tab.active-bbpos  { background: var(--accent-bbpos-light);  color: var(--accent-bbpos); }
+  .tab.active-titus  { background: var(--accent-titus-light);  color: var(--accent-titus); }
   .tab.active-gen    { background: var(--accent-gen-light);    color: var(--accent-gen); }
   .tab.active-ul     { background: var(--accent-ul-light);     color: var(--accent-ul); }
   .tab.active-pt     { background: var(--accent-pt-light);     color: var(--accent-pt); }
@@ -50,6 +52,7 @@
   .tab.active-touch  .tab-count { background: #c7d2fe; color: var(--accent-touch); }
   .tab.active-mpos   .tab-count { background: #bae6fd; color: var(--accent-mpos); }
   .tab.active-bbpos  .tab-count { background: #fecaca; color: var(--accent-bbpos); }
+  .tab.active-titus  .tab-count { background: #fed7aa; color: var(--accent-titus); }
   .tab.active-gen    .tab-count { background: #fde68a; color: var(--accent-gen); }
   .tab.active-ul     .tab-count { background: #fde8d8; color: var(--accent-ul); }
   .tab.active-pt     .tab-count { background: #fbcfe8; color: var(--accent-pt); }
@@ -68,6 +71,7 @@
   .search-wrap input.touch-focus:focus   { border-color: var(--accent-touch);  box-shadow: 0 0 0 3px var(--accent-touch-light); }
   .search-wrap input.mpos-focus:focus    { border-color: var(--accent-mpos);   box-shadow: 0 0 0 3px var(--accent-mpos-light); }
   .search-wrap input.bbpos-focus:focus   { border-color: var(--accent-bbpos);  box-shadow: 0 0 0 3px var(--accent-bbpos-light); }
+  .search-wrap input.titus-focus:focus   { border-color: var(--accent-titus);  box-shadow: 0 0 0 3px var(--accent-titus-light); }
   .search-wrap input.gen-focus:focus     { border-color: var(--accent-gen);    box-shadow: 0 0 0 3px var(--accent-gen-light); }
   .search-wrap input.ul-focus:focus      { border-color: var(--accent-ul);     box-shadow: 0 0 0 3px var(--accent-ul-light); }
   .search-wrap input.pt-focus:focus      { border-color: var(--accent-pt);     box-shadow: 0 0 0 3px var(--accent-pt-light); }
@@ -93,6 +97,7 @@
   .card[data-type="touch"]::before  { background: var(--accent-touch); }
   .card[data-type="mpos"]::before   { background: var(--accent-mpos); }
   .card[data-type="bbpos"]::before  { background: var(--accent-bbpos); }
+  .card[data-type="titus"]::before  { background: var(--accent-titus); }
   .card[data-type="general"]::before{ background: var(--accent-gen); }
   .card[data-type="useful"]::before { background: var(--accent-ul); }
   .card[data-type="prompt"]::before { background: var(--accent-pt); }
@@ -108,6 +113,7 @@
   .card[data-type="touch"]  .card-icon { background: var(--accent-touch-light); }
   .card[data-type="mpos"]   .card-icon { background: var(--accent-mpos-light); }
   .card[data-type="bbpos"]  .card-icon { background: var(--accent-bbpos-light); }
+  .card[data-type="titus"]  .card-icon { background: var(--accent-titus-light); }
   .card[data-type="general"].card-icon, .card[data-type="general"] .card-icon { background: var(--accent-gen-light); }
   .card[data-type="useful"] .card-icon { background: var(--accent-ul-light); }
   .card[data-type="prompt"] .card-icon { background: var(--accent-pt-light); }
@@ -119,6 +125,7 @@
   .card[data-type="touch"]  .card-icon svg { stroke: var(--accent-touch); }
   .card[data-type="mpos"]   .card-icon svg { stroke: var(--accent-mpos); }
   .card[data-type="bbpos"]  .card-icon svg { stroke: var(--accent-bbpos); }
+  .card[data-type="titus"]  .card-icon svg { stroke: var(--accent-titus); }
   .card[data-type="general"] .card-icon svg { stroke: var(--accent-gen); }
   .card[data-type="useful"] .card-icon svg { stroke: var(--accent-ul); }
   .card[data-type="prompt"] .card-icon svg { stroke: var(--accent-pt); }
@@ -178,6 +185,10 @@
   <button class="tab" data-tab-type="bbpos" onclick="switchTab('bbpos',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
     e185 BBPOS <span class="tab-count">1</span>
+  </button>
+  <button class="tab" data-tab-type="titus" onclick="switchTab('titus',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
+    Titus e185 mPOS <span class="tab-count">1</span>
   </button>
   <button class="tab" data-tab-type="general" onclick="switchTab('general',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
@@ -353,6 +364,13 @@
     <div class="card-footer"><span class="card-tag">Confluence</span></div>
   </a>
 
+  <!-- ═══ Titus e185 mPOS ═══ -->
+  <a class="card hidden" data-type="titus" data-source="Confluence" href="https://verifone.atlassian.net/wiki/spaces/GPH/pages/1030456737/Titus+e185+mPOS+Project+Tracker" target="_blank" data-name="Titus e185 mPOS Project Tracker" data-desc="" data-tag="Confluence">
+    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+    <div class="card-name">Titus e185 mPOS Project Tracker</div><div class="card-desc"></div>
+    <div class="card-footer"><span class="card-tag">Confluence</span></div>
+  </a>
+
   <!-- ═══ General (Jira → Confluence → SharePoint) ═══ -->
   <div class="section-label section-label-jira hidden">Jira</div>
   <a class="card hidden" data-type="general" data-source="Jira" href="https://verifone.atlassian.net/jira/dashboards/19461" target="_blank" data-name="Timesheet" data-desc="" data-tag="Jira">
@@ -502,15 +520,15 @@
 
 <script>
 let currentType = 'v310';
-const ALL_TYPES = ['v310','ux700a','ux600a','vr1','touch','mpos','bbpos','general','useful'];
+const ALL_TYPES = ['v310','ux700a','ux600a','vr1','touch','mpos','bbpos','titus','general','useful'];
 
 function switchTab(type, el) {
   currentType = type;
   document.querySelectorAll('.tab').forEach(t => t.className = 'tab');
-  const sm = { v310:'v310', ux700a:'ux700a', ux600a:'ux600a', vr1:'vr1', touch:'touch', mpos:'mpos', bbpos:'bbpos', general:'gen', useful:'ul', prompt:'pt' };
+  const sm = { v310:'v310', ux700a:'ux700a', ux600a:'ux600a', vr1:'vr1', touch:'touch', mpos:'mpos', bbpos:'bbpos', titus:'titus', general:'gen', useful:'ul', prompt:'pt' };
   el.className = 'tab active-' + (sm[type] ?? 'v310');
   const input = document.getElementById('searchInput');
-  const fm = { v310:'v310-focus', ux700a:'ux700a-focus', ux600a:'ux600a-focus', vr1:'vr1-focus', touch:'touch-focus', mpos:'mpos-focus', bbpos:'bbpos-focus', general:'gen-focus', useful:'ul-focus', prompt:'pt-focus' };
+  const fm = { v310:'v310-focus', ux700a:'ux700a-focus', ux600a:'ux600a-focus', vr1:'vr1-focus', touch:'touch-focus', mpos:'mpos-focus', bbpos:'bbpos-focus', titus:'titus-focus', general:'gen-focus', useful:'ul-focus', prompt:'pt-focus' };
   input.className = fm[type] ?? 'v310-focus';
   input.value = '';
   document.getElementById('resultCount').textContent = '';
