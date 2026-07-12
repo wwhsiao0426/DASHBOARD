@@ -547,10 +547,21 @@ function filter() {
     c.classList.toggle('hidden', !show);
     if (show) visible++;
   });
-  // Section labels: show only on General tab without search
+  // Section labels: show only on General tab without search, repositioned before first card of each source
   document.querySelectorAll('.section-label').forEach(lbl => {
     lbl.classList.toggle('hidden', currentType !== 'general' || !!q);
   });
+  if (currentType === 'general' && !q) {
+    const jLbl = document.querySelector('.section-label-jira');
+    const cLbl = document.querySelector('.section-label-cf');
+    const sLbl = document.querySelector('.section-label-sp');
+    const firstJira = document.querySelector('.card[data-type="general"][data-source="Jira"]:not(.hidden)');
+    const firstCf   = document.querySelector('.card[data-type="general"][data-source="Confluence"]:not(.hidden)');
+    const firstSp   = document.querySelector('.card[data-type="general"][data-source="SharePoint"]:not(.hidden)');
+    if (firstJira) firstJira.before(jLbl);
+    if (firstCf)   firstCf.before(cLbl);
+    if (firstSp)   firstSp.before(sLbl);
+  }
   const total = document.querySelectorAll(`.card[data-type="${currentType}"]`).length;
   document.getElementById('resultCount').textContent = q ? `顯示 ${visible} / ${total} 筆` : '';
   if (visible === 0) {
